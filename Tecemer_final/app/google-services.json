@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "194411202352",
+    "project_id": "tecnologias-d9fee",
+    "storage_bucket": "tecnologias-d9fee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194411202352:android:fc332f4558341fc776eaf5",
+        "android_client_info": {
+          "package_name": "com.example.tecemer_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194411202352-1spc2nbaupnfb8a87qsm5btkoiefu37k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSM-j9nYo07u9Wr5LixK1gUfnRBWB0HzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194411202352-1spc2nbaupnfb8a87qsm5btkoiefu37k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

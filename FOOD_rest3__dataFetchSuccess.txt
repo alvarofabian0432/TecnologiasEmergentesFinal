@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:text="¡Elige tu desayuno!"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="10dp"
+        android:layout_centerInParent="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:layout_editor_absoluteX="10dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+package com.example.food_rest2;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    private String url = "http://192.168.1.10:8080/api/v1/platillos";
+
+    private RecyclerView mList, pList;
+    PopularAdapter popularAdapter;
+
+    private LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+    private List<Plato> platoList, popularList;
+    private RecyclerView.Adapter adapter,popularadapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mList = findViewById(R.id.main_list);
+        pList = findViewById(R.id.main_little);
+
+        platoList = new ArrayList<>();
+        popularList = new ArrayList<>();
+
+        adapter = new PlatoAdapter(getApplicationContext(), platoList);
+        popularadapter = new PopularAdapter(getApplicationContext(), popularList);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        dividerItemDecoration = new DividerItemDecoration(mList.getContext(), linearLayoutManager.getOrientation());
+
+        mList.setHasFixedSize(true);
+        pList.setHasFixedSize(true);
+
+        mList.setLayoutManager(linearLayoutManager);
+        mList.addItemDecoration(dividerItemDecoration);
+
+        mList.setAdapter(adapter);
+        pList.setAdapter(popularAdapter);
+
+        getData();
+        getPopularData();
+    }
+
+    private void getData() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Cargando los platillos...");
+        progressDialog.show();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        Plato plato = new Plato();
+                        plato.setNombre(jsonObject.getString("nombre"));
+                        plato.setDescripcion(jsonObject.getString("descripcion"));
+                        plato.setPrecio(jsonObject.getDouble("precio"));
+                        plato.setFotoPlatillo(jsonObject.getString("fotoPlatillo"));
+
+                        platoList.add(plato);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+                progressDialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void getPopularData() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Cargando datos...");
+        progressDialog.show();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        Plato plato = new Plato();
+                        plato.setNombre(jsonObject.getString("nombre"));
+                        plato.setFotoPlatillo(jsonObject.getString("fotoPlatillo"));
+
+                        popularList.add(plato);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+                popularAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+                progressDialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
+    }
+}
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:elevation="90dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="248dp"
+        android:background="#E1FBC2"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/post_Image"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:text="Nombre:"
+                android:textColor="#3C3939"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/post_nombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:text="NombrePlaceholder"
+                android:textColor="#3C3939"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:text="Descripción: "
+                android:textColor="#3C3939"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/post_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:text="DescripcionPlaceholder"
+                android:textColor="#3C3939" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:text="Precio:"
+                android:textColor="#3C3939"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/post_precio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginBottom="15sp"
+                android:text="PrecioPlaceholder"
+                android:textColor="#3C3939" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+package com.example.food_rest2;
+
+public class Plato {
+
+    public String id;
+    public String nombre;
+    public String descripcion;
+    public double precio;
+    public String fotoPlatillo;
+
+    public Plato(){
+    }
+
+    public Plato(String id, String nombre, String descripcion, double precio, String fotoPlatillo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.fotoPlatillo = fotoPlatillo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public String getFotoPlatillo() {
+        return fotoPlatillo;
+    }
+
+    public void setFotoPlatillo(String fotoPlatillo) {
+        this.fotoPlatillo = fotoPlatillo;
+    }
+}
+
+
+
+
+
+
+
+package com.example.food_rest2;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+public class PlatoAdapter extends RecyclerView.Adapter<PlatoAdapter.ViewHolder> {
+    private Context context;
+    private List<Plato> list;
+
+    public PlatoAdapter(Context context, List<Plato> list) {
+        this.context = context;
+        this.list = list;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        Plato plato = list.get(position);
+        holder.platoNombre.setText(plato.getNombre());
+        holder.platoDescripcion.setText(plato.getDescripcion());
+        holder.platoPrecio.setText(String.valueOf(plato.getPrecio()));
+        Picasso.get().load(plato.getFotoPlatillo()).into(holder.platoImage);
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView platoNombre, platoDescripcion, platoPrecio;
+        public ImageView platoImage;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            platoNombre = itemView.findViewById(R.id.post_nombre);
+            platoDescripcion = itemView.findViewById(R.id.post_descripcion);
+            platoPrecio = itemView.findViewById(R.id.post_precio);
+            platoImage = itemView.findViewById(R.id.post_Image);
+        }
+    }
+}

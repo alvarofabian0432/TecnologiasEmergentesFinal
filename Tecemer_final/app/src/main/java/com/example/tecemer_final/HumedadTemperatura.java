@@ -12,7 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class HumedadTemperatura extends AppCompatActivity {
 
     private TextView hume;
     private TextView tempe;
@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hume=findViewById(R.id.lblHumed);
-        tempe=findViewById(R.id.lblTempe);
+        hume = findViewById(R.id.lblHumed);
+        tempe = findViewById(R.id.lblTempe);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference().child("Sensor").child("hum");

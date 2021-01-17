@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:gravity="center_vertical|center_horizontal"
+    tools:context=".ActivityLeds">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="120dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/led_off"
+            android:id="@+id/imgLed1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PRENDER"
+            android:layout_margin="5dp"
+            android:id="@+id/btnon1"/>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="APAGAR"
+            android:layout_margin="5dp"
+            android:id="@+id/btnoff1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="120dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/led_off"
+            android:id="@+id/imgLed2"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PRENDER"
+            android:layout_margin="5dp"
+            android:id="@+id/btnon2"/>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="APAGAR"
+            android:layout_margin="5dp"
+            android:id="@+id/btnoff2"/>
+    </LinearLayout>
+
+</LinearLayout>
+

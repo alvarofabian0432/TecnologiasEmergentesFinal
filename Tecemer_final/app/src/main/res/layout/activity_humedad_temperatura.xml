@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20sp"
-                android:text="Humedad"
+                android:text="Distancia en cm"
                 android:textColor="#3C3939"
                 android:textSize="35sp"
                 android:textStyle="bold" />

@@ -3,12 +3,14 @@ package com.example.tecemer_final;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.tecemer_final.model.Leds;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,11 +22,13 @@ public class ActivityLeds extends AppCompatActivity {
     private ImageView imgLed1, imgLed2, imgLed3;
     private Button btnOn1, btnOn2, btnOff1, btnOff2;
     private Leds leds;
-
+    private MaterialButton btnIntentTemperaturaHumedad;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leds);
+
+        btnIntentTemperaturaHumedad = findViewById(R.id.btnIntentTemperaturaHumedad);
 
         imgLed1 = findViewById(R.id.imgLed1);
         imgLed2 = findViewById(R.id.imgLed2);
@@ -35,8 +39,17 @@ public class ActivityLeds extends AppCompatActivity {
         btnOff1 = findViewById(R.id.btnoff1);
         btnOff2 = findViewById(R.id.btnoff2);
 
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("Leds");
+
+        btnIntentTemperaturaHumedad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityLeds.this, ActivityHumedadTemperatura.class);
+                startActivity(intent);
+            }
+        });
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

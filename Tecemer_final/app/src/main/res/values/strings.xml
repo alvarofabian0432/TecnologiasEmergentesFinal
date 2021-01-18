@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Lectura de datos en tiempo real</string>
+    <string name="temperatura_humedad">Temperatura y Humedad</string>
+    <string name="leds">Leds</string>
 </resources>
